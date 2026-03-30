@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="bg">
+
+<!-- 🔝 NAVBAR -->
+<div class="navbar">
+    <div class="logo">📧 Spam Detector</div>
+
+    <div class="nav-right">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/profile">Profile</a>
+        <a href="/logout" class="logout">Logout</a>
+    </div>
+</div>
+
+<!-- MAIN CARD -->
+<div class="glass-card">
+    <h1>Spam Checker</h1>
+
+    <textarea id="email" placeholder="Paste your email here..."></textarea>
+
+    <button class="btn" onclick="checkSpam()">Check Spam</button>
+
+    <h2 id="result"></h2>
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
