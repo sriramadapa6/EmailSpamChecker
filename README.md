@@ -1,6 +1,7 @@
 # 📧 Email Spam Detector
 
 A full-stack web application that detects spam emails using Machine Learning.
+Note: database.db will be automatically created when you run the app.
 
 ## 🚀 Features
 
