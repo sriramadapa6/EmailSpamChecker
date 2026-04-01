@@ -28,6 +28,13 @@
     <div class="glass-card">
         <h2>Email History</h2>
 
+        <!-- 🗑 CLEAR BUTTON -->
+        <form method="POST" action="/clear_history">
+            <button class="btn outline" style="margin-bottom:10px;">
+                🗑 Clear History
+            </button>
+        </form>
+
         <div class="history-box">
             {% for email, result in history %}
                 <div class="history-item">
@@ -42,7 +49,7 @@
 
 </div>
 
-<!-- ✅ SCRIPTS (ONLY ONCE) -->
+<!-- ✅ SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
@@ -60,7 +67,7 @@
     new Chart(document.getElementById("chart"), {
         type: "pie",
         data: {
-            labels: ["🚨 Spam", "✅ Not Spam"],   // 🔥 updated labels
+            labels: ["🚨 Spam", "✅ Not Spam"],
             datasets: [{
                 data: [spam, notspam],
                 backgroundColor: ["#ff5252", "#00e676"],
@@ -70,8 +77,6 @@
         },
         options: {
             plugins: {
-
-                // ✅ LEGEND STYLE (TEXT DARK/BOLD)
                 legend: {
                     position: "top",
                     labels: {
@@ -83,8 +88,6 @@
                         padding: 20
                     }
                 },
-
-                // ✅ NUMBERS INSIDE PIE
                 datalabels: {
                     color: "#fff",
                     font: {
