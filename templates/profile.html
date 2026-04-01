@@ -3,6 +3,7 @@
 <head>
 <link rel="stylesheet" href="/static/style.css">
 </head>
+
 <body class="bg">
 
 <div class="navbar">
@@ -15,9 +16,32 @@
     </div>
 </div>
 
-<div class="glass-card">
-    <h2>👤 Profile</h2>
-    <p>Username: {{ user }}</p>
+<div class="glass-card" style="margin-top:100px;">
+
+    <h1>👤 {{ user }}</h1>
+    <p style="color:#ccc;">Manage your account</p>
+
+    <hr>
+
+    <h3>Email</h3>
+
+        {% if email %}
+            <!-- ✅ SHOW SAVED EMAIL -->
+            <p style="color:#00e676;">{{ email }}</p>
+
+        {% else %}
+            <!-- 🔥 SHOW INPUT ONLY FIRST TIME -->
+            <form method="POST" action="/save_email">
+                <input 
+                    type="email" 
+                    name="email" 
+                    placeholder="Enter your email"
+                    required
+                >
+                <button class="btn">Save Email</button>
+            </form>
+        {% endif %}
+
 </div>
 
 </body>
