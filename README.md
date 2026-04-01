@@ -1,93 +1,109 @@
 # 📧 Email Spam Detection System
 
-A full-stack web application that detects whether an email is **Spam or Not Spam** using rule-based filtering techniques.
+A full-stack web application that detects whether an email is **Spam or Not Spam** using **Machine Learning** along with rule-based filtering techniques.
 
 ---
 
 ## 🚀 Features
 
 * 🔐 User Authentication (Login & Register)
-* 📧 Spam Detection using keyword-based filtering
+* 🤖 Spam Detection using **Machine Learning Model**
+* 📧 Keyword-Based Filtering (Fallback system)
 * 📊 Dashboard with Pie Chart Analytics
 * 📜 Email History Tracking
 * 🎨 Modern UI (Glassmorphism Design)
+* ⚡ Real-time Prediction with Confidence Score
+
+---
+
+## 🤖 Machine Learning Details
+
+* **Algorithm Used:** Naive Bayes (MultinomialNB)
+* **Text Processing:** TF-IDF Vectorization
+* **Library:** Scikit-learn
+
+### 🔍 ML Workflow
+
+1. Collect dataset (spam / not spam emails)
+2. Preprocess text (lowercase, remove noise)
+3. Convert text → numerical using **TF-IDF**
+4. Train model using **Naive Bayes**
+5. Save model using `pickle`
+6. Load model in Flask app
+7. Predict user input in real-time
 
 ---
 
 ## 🛠️ Tech Stack
 
-* **Frontend**: HTML, CSS, JavaScript
-* **Backend**: Python (Flask)
-* **Spam Detection**: Rule-Based Filtering (Keyword Matching)
-* **Database**: SQLite
-
----
-
-## 🧠 How It Works
-
-The system analyzes email content and checks for spam-related keywords such as:
-
-* "free"
-* "win"
-* "urgent"
-* "offer"
-* "click"
-* "bank"
-
-If these keywords are found, the email is classified as **Spam**, otherwise **Not Spam**.
+**Frontend:** HTML, CSS, JavaScript
+**Backend:** Python (Flask)
+**Machine Learning:** Scikit-learn
+**Database:** SQLite
 
 ---
 
 ## 📂 Project Structure
 
-```
+```id="n1e93r"
 EmailSpamChecker/
 │
 ├── app.py
+├── train_model.py
+├── model.pkl
+├── vectorizer.pkl
+├── database.db
+│
 ├── templates/
 ├── static/
-├── model.pkl (optional)
-├── vectorizer.pkl (optional)
 ```
 
 ---
 
 ## ▶️ Run Locally
 
-```bash
-pip install flask
+```bash id="2m2f0n"
+pip install flask scikit-learn
 python app.py
 ```
 
-Open:
-http://127.0.0.1:5000
-
----
-
-## 📌 Note
-
-**database.db will be automatically created when you run the application for the first time.**
+👉 Open: http://127.0.0.1:5000
 
 ---
 
 ## 📊 Example
 
-Input:
-"Get FREE iPhone now!!!"
+**Input:**
 
-Output:
-🚨 Spam
+```id="njzn0u"
+Win a FREE gift card now! Click here!
+```
+
+**Output:**
+
+```id="9xib0u"
+🚨 Spam (92%)
+```
+
+---
+
+## 📌 Note
+
+* `model.pkl` → trained ML model
+* `vectorizer.pkl` → TF-IDF transformer
+* `database.db` auto-created
 
 ---
 
 ## 📈 Future Improvements
 
-* Add Machine Learning model for better accuracy
+* Deep Learning (LSTM / BERT)
 * Gmail API integration
-* Advanced spam pattern detection
+* Real-time email scanning
+* Better dataset training
 
 ---
 
 ## 👨‍💻 Author
 
-Sriram Adapa
+**Sriram Adapa**
