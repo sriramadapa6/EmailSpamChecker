@@ -9,7 +9,7 @@ app.secret_key = "secret123"
 model = pickle.load(open("model.pkl", "rb"))
 vectorizer = pickle.load(open("vectorizer.pkl", "rb"))
 
-# ---------------- DATABASE SETUP ----------------
+# ---------------- DATABASE ----------------
 def init_db():
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
@@ -18,16 +18,8 @@ def init_db():
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY,
         username TEXT,
-        password TEXT
-    )
-    """)
-
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS history (
-        id INTEGER PRIMARY KEY,
-        email TEXT,
-        result TEXT,
-        user TEXT
+        password TEXT,
+        email TEXT
     )
     """)
 
@@ -62,13 +54,21 @@ def login():
 
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (user, pwd))
+        cursor.execute("SELECT * FROM users WHERE username=?", (user,))
         result = cursor.fetchone()
         conn.close()
 
-        if result:
-            session["user"] = user
-            return redirect("/")
+        # ❌ USER NOT FOUND
+        if not result:
+            return render_template("login.html", error="❌ User not found")
+
+        # ❌ PASSWORD WRONG
+        if pwd != result[2]:
+            return render_template("login.html", error="❌ Password incorrect")
+
+        # ✅ SUCCESS
+        session["user"] = user
+        return redirect("/")
 
     return render_template("login.html")
 
@@ -79,7 +79,7 @@ def home():
         return redirect("/login")
     return render_template("index.html")
 
-# ---------------- PREDICT (IMPROVED) ----------------
+# ---------------- PREDICT ----------------
 @app.route("/predict", methods=["POST"])
 def predict():
     if "user" not in session:
@@ -88,26 +88,13 @@ def predict():
     data = request.json
     email = data["email"]
 
-    email_lower = email.lower()
+    transformed = vectorizer.transform([email])
+    prediction = model.predict(transformed)[0]
+    probability = model.predict_proba(transformed)[0][1]
 
-    # 🔥 KEYWORD BOOST (important)
-    spam_keywords = [
-        "win", "free", "urgent", "prize", "offer",
-        "click", "reward", "money", "lottery", "bank"
-    ]
+    result = "Spam" if prediction == 1 else "Not Spam"
+    confidence = round(probability * 100, 2)
 
-    if any(word in email_lower for word in spam_keywords):
-        result = "Spam"
-        confidence = 90.0
-    else:
-        transformed = vectorizer.transform([email])
-        pred = model.predict(transformed)[0]
-        prob = model.predict_proba(transformed)[0][1]
-
-        result = "Spam" if pred == 1 else "Not Spam"
-        confidence = round(prob * 100, 2)
-
-    # Save history
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
     cursor.execute(
@@ -131,7 +118,6 @@ def dashboard():
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
-    # Stats
     cursor.execute("""
         SELECT result, COUNT(*) 
         FROM history 
@@ -140,7 +126,6 @@ def dashboard():
     """, (session["user"],))
     stats = cursor.fetchall() or []
 
-    # History
     cursor.execute("""
         SELECT email, result 
         FROM history 
@@ -153,18 +138,64 @@ def dashboard():
 
     return render_template("dashboard.html", stats=stats, history=history)
 
+@app.route("/clear_history", methods=["POST"])
+def clear_history():
+    if "user" not in session:
+        return redirect("/login")
+
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM history WHERE user=?", (session["user"],))
+    
+    conn.commit()
+    conn.close()
+
+    return redirect("/dashboard")
+
 # ---------------- PROFILE ----------------
 @app.route("/profile")
 def profile():
     if "user" not in session:
         return redirect("/login")
-    return render_template("profile.html", user=session["user"])
+
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT email FROM users WHERE username=?", (session["user"],))
+    result = cursor.fetchone()
+
+    email = result[0] if result and result[0] else ""
+
+    conn.close()
+
+    return render_template("profile.html", user=session["user"], email=email)
 
 # ---------------- LOGOUT ----------------
 @app.route("/logout")
 def logout():
     session.pop("user", None)
     return redirect("/login")
+
+@app.route("/save_email", methods=["POST"])
+def save_email():
+    if "user" not in session:
+        return redirect("/login")
+
+    email = request.form["email"]
+
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "UPDATE users SET email=? WHERE username=?",
+        (email, session["user"])
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/profile")
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
