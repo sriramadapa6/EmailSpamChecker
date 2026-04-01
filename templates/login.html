@@ -7,6 +7,9 @@
 
 <div class="glass-card">
     <h2>Login</h2>
+    {% if error %}
+        <p style="color:#ff5252; text-align:center;">{{ error }}</p>
+    {% endif %}
 
     <form method="POST">
         <input name="username" placeholder="Username" required>
