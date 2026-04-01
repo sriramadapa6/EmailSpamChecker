@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="/static/style.css">
+    <title>Spam Detector</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
+
 <body class="bg">
 
-<!-- 🔝 NAVBAR -->
+<!-- NAVBAR -->
 <div class="navbar">
     <div class="logo">📧 Spam Detector</div>
 
@@ -16,17 +18,63 @@
     </div>
 </div>
 
-<!-- MAIN CARD -->
-<div class="glass-card">
-    <h1>Spam Checker</h1>
+<!-- MAIN -->
+<div class="main-container">
 
-    <textarea id="email" placeholder="Paste your email here..."></textarea>
+    <!-- LEFT PANEL -->
+    <div class="glass-card analysis-box">
+        <h3 style="text-align:center;">Spam potential</h3>
 
-    <button class="btn" onclick="checkSpam()">Check Spam</button>
+        <!-- 🔥 FIXED SEMICIRCLE -->
+        <div class="progress-container">
+            <svg viewBox="0 0 200 120"> <!-- increased height -->
 
-    <h2 id="result"></h2>
+                <!-- background -->
+                <path 
+                    d="M10,100 A90,90 0 0,1 190,100" 
+                    class="bg-path"
+                />
+
+                <!-- progress -->
+                <path 
+                    d="M10,100 A90,90 0 0,1 190,100"
+                    class="progress-path"
+                    id="progressPath"
+                />
+            </svg>
+
+            <!-- percentage -->
+            <div id="percent" class="percent-text">0%</div>
+        </div>
+
+        <!-- METRICS -->
+        <div class="metric">Spam words <span id="spamWords">0</span></div>
+        <div class="metric">Syntax & Variables <span>0%</span></div>
+        <div class="metric">Links <span id="links">0</span></div>
+        <div class="metric">Images <span>0</span></div>
+        <div class="metric">Emojis <span id="emojis">0</span></div>
+        <div class="metric">Words in total <span id="words">0</span></div>
+
+        <p class="note">⚠️ Emails with simple text are less likely spam</p>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="glass-card">
+        <h1>Email Spam Checker Tool</h1>
+        <p style="color:#ccc; font-size:14px;">
+            Instantly check your email copy for spam triggers.
+        </p>
+
+        <textarea id="email" placeholder="Paste your email here..."></textarea>
+
+        <button class="btn" onclick="checkSpam()">Check Spam</button>
+
+        <h2 id="result"></h2>
+    </div>
+
 </div>
 
 <script src="/static/script.js"></script>
+
 </body>
 </html>
